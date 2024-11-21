@@ -18,7 +18,9 @@ const config: Config = {
     '!src/**/*.d.ts',
   ],
   coverageDirectory: '<rootDir>/coverage',
+  moduleNameMapper: {
+'^(\\.{1,2}/.*)\\.js$': '$1',
+  },
 };
 
 export default config;
-
