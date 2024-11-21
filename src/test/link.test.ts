@@ -14,10 +14,10 @@ jest.mock('nanoid', () => ({
 }));
 
 jest.mock('chalk', () => ({
-  green: jest.fn(),
-  blue: jest.fn(),
-  red: jest.fn(),
-  yellow: jest.fn()
+  green: (msg: string) => msg,
+  blue: (msg: string) => msg,
+  red: (msg: string) => msg,
+  yellow: (msg: string) => msg,
 }));
 
 describe('Testes de Integração - Rotas de Links', () => {
