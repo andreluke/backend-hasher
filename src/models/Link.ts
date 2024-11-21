@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { ILink } from "../interfaces/ILink";
+import { ILink } from "../interfaces/ILink.js";
 import validator from "validator";
 
 const LinkSchema = new Schema<ILink>(

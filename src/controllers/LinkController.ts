@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import Link from "../models/Link";
+import Link from "../models/Link.js";
 import { nanoid } from "nanoid";
-import { ILink } from "../interfaces/ILink";
+import { ILink } from "../interfaces/ILink.js";
 
 class LinkController {
   public async create(req: Request, res: Response): Promise<Response> {

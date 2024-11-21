@@ -1,17 +1,11 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import chalk from "chalk";
-dotenv.config();
 
-// A URI indica o IP, a porta e BD a ser conectado
 const uri:string = process.env.DB_URI || "";
 
-// Salva o objeto mongoose em uma variável
 const db = mongoose;
 
 export function connect() {
-  // Utiliza o método connect do Mongoose para estabelecer a conexão com
-  // o MongoDB, usando a URI
   db.connect(uri)
     .then(() => console.log(chalk.green("Conectado ao MongoDB")))
     .catch((e) => {

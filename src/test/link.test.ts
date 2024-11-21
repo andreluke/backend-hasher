@@ -1,17 +1,16 @@
 import request from 'supertest';
-import app from '../index'; // Certifique-se de que você exporta o `app` do seu servidor
+import app from '../index'; 
 import mongoose from 'mongoose';
 import Link from '../models/Link';
 import dotenv from 'dotenv';
 import { jest } from '@jest/globals';
-import chalk from 'chalk';
 
 dotenv.config({ path: '.env.test' });
 
 const fakeID = new mongoose.Types.ObjectId()
 
 jest.mock('nanoid', () => ({
-  nanoid: jest.fn(() => '123456'),  // Valor fixo para os testes
+  nanoid: jest.fn(() => '123456'), 
 }));
 
 jest.mock('chalk', () => ({
@@ -28,7 +27,6 @@ describe('Testes de Integração - Rotas de Links', () => {
     }
   });
 
-  // Fechar a conexão após todos os testes
   afterAll(async () => {
     const collections = await mongoose.connection.db.collections();
     for (let collection of collections) {
@@ -65,7 +63,7 @@ describe('Testes de Integração - Rotas de Links', () => {
         .send({ url: "http://example.com" });
 
       expect(response.status).toBe(201);
-      expect(response.body.slug).toHaveLength(6); // Tamanho do nanoid
+      expect(response.body.slug).toHaveLength(6); 
     });
 
     it("Deve retornar erro caso nada seja passado", async () => {
