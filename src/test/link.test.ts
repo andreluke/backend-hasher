@@ -1,7 +1,7 @@
 import request from 'supertest';
-import app from '../index'; 
+import app from '../index.js'; 
 import mongoose from 'mongoose';
-import Link from '../models/Link';
+import Link from '../models/Link.js';
 import dotenv from 'dotenv';
 import { jest } from '@jest/globals';
 

@@ -11,7 +11,6 @@
   },
   "exclude": [
     "node_modules",  // Exclui a pasta node_modules, padrão
-    "src/test",           // Exclui a pasta test
     "jest.config.ts" // Exclui o arquivo jest.config.js
   ]
 }
