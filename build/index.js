@@ -10,7 +10,7 @@ export const serverInfo = {
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: '*' // Aceita requisições de qualquer origem
+    origin: '*'
 }));
 app.use("/api", routes);
 app.use((req, res, next) => {
@@ -26,9 +26,9 @@ async function startServer() {
         if (process.env.NODE_ENV !== 'test') {
             app.listen(serverInfo.port, "0.0.0.0", () => {
                 console.log(chalk.blue(`${chalk.underline("Servidor")} rodando na porta ${serverInfo.port}`));
-                console.log(chalk.bgYellow(chalk.red("Seja bem vindo ao hasher!")));
+                console.log(chalk.bgYellow(chalk.bold(chalk.red("Seja bem vindo ao hasher!"))));
                 if (process.env.NODE_ENV === "development") {
-                    console.log(chalk.blue(`Acesse a URL em: ${serverInfo.baseURL}:${serverInfo.port}`));
+                    console.log(chalk.blue(`Acesse a URL em: ${serverInfo.baseURL}:${serverInfo.port}/api/`));
                 }
             });
         }

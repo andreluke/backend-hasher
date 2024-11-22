@@ -20,6 +20,7 @@ jest.mock('chalk', () => ({
   yellow: (msg: string) => msg,
   underline: (msg: string) => msg,
   bgYellow: (msg: string) => msg,
+  bold: (msg: string) => msg,
 }));
 
 describe('Testes de Integração - Rotas de Links (/api/links)', () => {

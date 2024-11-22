@@ -12,7 +12,7 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
   testMatch: ['**/?(*.)+(spec|test).ts?(x)'],
   modulePathIgnorePatterns: ['<rootDir>/build/'],
-  collectCoverage: true,
+  collectCoverage: false,
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
