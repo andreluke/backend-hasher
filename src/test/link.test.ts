@@ -19,9 +19,10 @@ jest.mock('chalk', () => ({
   red: (msg: string) => msg,
   yellow: (msg: string) => msg,
   underline: (msg: string) => msg,
+  bgYellow: (msg: string) => msg,
 }));
 
-describe('Testes de Integração - Rotas de Links', () => {
+describe('Testes de Integração - Rotas de Links (/api/links)', () => {
   beforeAll(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(process.env.MONGO_URI_TEST || '');

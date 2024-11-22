@@ -26,6 +26,7 @@ async function startServer() {
         if (process.env.NODE_ENV !== 'test') {
             app.listen(serverInfo.port, "0.0.0.0", () => {
                 console.log(chalk.blue(`${chalk.underline("Servidor")} rodando na porta ${serverInfo.port}`));
+                console.log(chalk.bgYellow(chalk.red("Seja bem vindo ao hasher!")));
                 if (process.env.NODE_ENV === "development") {
                     console.log(chalk.blue(`Acesse a URL em: ${serverInfo.baseURL}:${serverInfo.port}`));
                 }
