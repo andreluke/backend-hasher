@@ -20,7 +20,7 @@ const config: Config = {
   coverageDirectory: '<rootDir>/coverage',
   moduleNameMapper: {
 '^(\\.{1,2}/.*)\\.js$': '$1',
-  },
+  }
 };
 
 export default config;

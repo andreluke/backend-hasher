@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import validator from "validator";
-const LinkSchema = new Schema({
+export const LinkSchema = new Schema({
     url: {
         type: String,
         required: [true, "O link é necessário"],
