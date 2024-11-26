@@ -18,10 +18,11 @@ let alimentoId2: string;
 let dietaId: string;
 let dietaDiariaId: string;
 
+
 const createAndLogin = async (): Promise<string> => {
   const existingUser = await mongoose.model('Usuario').findOne({ email: 'roberto@gmail.com' });
   if (!existingUser) {
-    await request(app).post('/api/user').send({
+    await request(app.server).post('/api/user').send({
       nome: 'Lucas',
       email: 'roberto@gmail.com',
       senha: '123123',
@@ -29,7 +30,7 @@ const createAndLogin = async (): Promise<string> => {
   }
 
   // Realiza o login para obter o token de autenticação
-  const loginResponse = await request(app).post('/api/auth/login').send({
+  const loginResponse = await request(app.server).post('/api/auth/login').send({
     email: 'roberto@gmail.com',
     senha: '123123',
   });
@@ -52,6 +53,10 @@ jest.mock('chalk', () => ({
   bold: (msg: string) => msg,
 }));
 
+jest.mock('consola', () => ({
+  log: (msg:string) => console.log(msg)
+}))
+
 describe('Testes de Integração', () => {
   beforeAll(async () => {
     if (mongoose.connection.readyState === 0) {
@@ -60,14 +65,14 @@ describe('Testes de Integração', () => {
 
     const existingUser = await mongoose.model('Usuario').findOne({ email: 'sales@gmail.com' });
     if (!existingUser) {
-      await request(app).post('/api/user').send({
+      await request(app.server).post('/api/user').send({
         nome: 'André',
         email: 'sales@gmail.com',
         senha: '123123',
       });
     }
 
-    const loginResponse = await request(app).post("/auth/login").send({
+    const loginResponse = await request(app.server).post("/auth/login").send({
       email: "sales@gmail.com",
       senha: "123123",
     });
@@ -87,7 +92,7 @@ describe('Testes de Integração', () => {
     it("POST /user", async () => {
       const start = Date.now(); // Inicia a medição de tempo
 
-      const response = await request(app).post("/api/user").send({
+      const response = await request(app.server).post("/api/user").send({
         nome: "André",
         email: "andre@gmail.com",
         senha: "123123",
@@ -107,7 +112,7 @@ describe('Testes de Integração', () => {
     })
 
     it("Deve fazer login e retornar um token", async () => {
-      const loginResponse = await request(app).post("/api/auth/login").send({
+      const loginResponse = await request(app.server).post("/api/auth/login").send({
         email: "andre@gmail.com",
         senha: "123123",
       });
@@ -122,7 +127,7 @@ describe('Testes de Integração', () => {
   describe("Rotas de links (/api/links)", () => {
     describe("POST /links", () => {
       it("Deve criar um novo link com uma slug personalizada", async () => {
-        const response = await request(app)
+        const response = await request(app.server)
           .post("/api/links")
           .send({ url: "http://example.com", slug: "customslug" }).set("Authorization", `${authToken}`);
   
@@ -134,7 +139,7 @@ describe('Testes de Integração', () => {
       });
   
       it("Deve falhar ao tentar repetir o mesmo slug", async () => {
-        const response = await request(app)
+        const response = await request(app.server)
           .post("/api/links")
           .send({ url: "http://example34.com", slug: "customslug" }).set("Authorization", `${authToken}`);
   
@@ -143,7 +148,7 @@ describe('Testes de Integração', () => {
       });
   
       it("Deve retornar uma slug nova caso nenhuma seja usada", async () => {
-        const response = await request(app)
+        const response = await request(app.server)
           .post("/api/links")
           .send({ url: "http://example.com" }).set("Authorization", `${authToken}`);
   
@@ -152,7 +157,7 @@ describe('Testes de Integração', () => {
       });
   
       it("Deve retornar erro caso nada seja passado", async () => {
-        const response = await request(app)
+        const response = await request(app.server)
           .post("/api/links")
           .send({}).set("Authorization", `${authToken}`);
   
@@ -161,7 +166,7 @@ describe('Testes de Integração', () => {
       });
   
       it("Deve retornar erro caso seja passado um link inválido", async () => {
-        const response = await request(app)
+        const response = await request(app.server)
           .post("/api/links")
           .send({ url: "aaaaaaaa"}).set("Authorization", `${authToken}`);
   
@@ -174,7 +179,7 @@ describe('Testes de Integração', () => {
       it("Deve retornar todos os links baseados na ordem alfabética", async () => {
         await Link.create([{ url: "http://b.com", slug: "111111" }, { url: "http://a.com", slug: "222222" }]);
   
-        const response = await request(app).get("/api/links");
+        const response = await request(app.server).get("/api/links");
   
         expect(response.status).toBe(200);
         expect(response.body[0].url).toBe("http://a.com");
@@ -186,14 +191,14 @@ describe('Testes de Integração', () => {
       it("Deve redirecionar para o link caso a slug exista", async () => {
         await Link.create({ url: "http://example.com", slug: "customslug2" });
   
-        const response = await request(app).get("/api/links/customslug2");
+        const response = await request(app.server).get("/api/links/customslug2");
   
         expect(response.status).toBe(302);
         expect(response.header.location).toBe("http://example.com");
       });
   
       it("Deve retornar um erro 404 caso a slug não exista", async () => {
-        const response = await request(app).get("/api/links/nonexistent");
+        const response = await request(app.server).get("/api/links/nonexistent");
   
         expect(response.status).toBe(404);
         expect(response.body.message).toBe("Link não encontrado");
@@ -207,7 +212,7 @@ describe('Testes de Integração', () => {
           slug: "customslug3",
         });
   
-        const response = await request(app).put("/api/links").send({
+        const response = await request(app.server).put("/api/links").send({
           id: link._id,
           url: "http://newexample.com",
         }).set("Authorization", `${authToken}`);
@@ -222,7 +227,7 @@ describe('Testes de Integração', () => {
           slug: "customslug4",
         });
   
-        const response = await request(app).put("/api/links").send({
+        const response = await request(app.server).put("/api/links").send({
           id: link._id,
           slug: "outroslug",
         }).set("Authorization", `${authToken}`);
@@ -232,7 +237,7 @@ describe('Testes de Integração', () => {
       });
   
       it("Deve retornar um erro 404 caso o ID não exista", async () => {
-        const response = await request(app).put("/api/links").send({
+        const response = await request(app.server).put("/api/links").send({
           id: fakeID,
           url: "http://newexample.com",
         }).set("Authorization", `${authToken}`);
@@ -242,7 +247,7 @@ describe('Testes de Integração', () => {
       });
   
       it("Deve retornar erros de validação se so dados forem incorretos", async () => {
-        const response = await request(app).put("/api/links").send({
+        const response = await request(app.server).put("/api/links").send({
           id: "invalid-id",
         }).set("Authorization", `${authToken}`);
   
@@ -256,7 +261,7 @@ describe('Testes de Integração', () => {
           slug: "customslug5",
         });
   
-        const response = await request(app).put("/api/links").send({
+        const response = await request(app.server).put("/api/links").send({
           id: link._id,
           url: "bbbbbbbb",
         }).set("Authorization", `${authToken}`);
@@ -270,14 +275,14 @@ describe('Testes de Integração', () => {
       it("Deve deletar um link pelo ID", async () => {
         const link = await Link.create({ url: "http://example.com", slug: "333333" });
   
-        const response = await request(app).delete(`/api/links/${link.id}`).set("Authorization", `${authToken}`);
+        const response = await request(app.server).delete(`/api/links/${link.id}`).set("Authorization", `${authToken}`);
   
         expect(response.status).toBe(200);
         expect(response.body.id).toBe(link.id.toString());
       });
   
       it("Deve retornar um erro 404 caso o link não exista", async () => {
-        const response = await request(app).delete(`/api/links/${fakeID}`).set("Authorization", `${authToken}`);
+        const response = await request(app.server).delete(`/api/links/${fakeID}`).set("Authorization", `${authToken}`);
   
         expect(response.status).toBe(404);
         expect(response.body.message).toBe("Link não encontrado");

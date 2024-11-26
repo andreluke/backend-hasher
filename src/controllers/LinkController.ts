@@ -1,10 +1,19 @@
-import { Request, Response } from "express";
+import { FastifyRequest, FastifyReply } from "fastify";
 import Link from "../models/Link.js";
 import { nanoid } from "nanoid";
 import { ILink } from "../interfaces/ILink.js";
+import {
+  createLink,
+  getSlug,
+  updateLink,
+  deleteLink,
+} from "../interfaces/ILinkController.js";
 
 class LinkController {
-  public async create(req: Request, res: Response): Promise<Response> {
+  public async create(
+    req: FastifyRequest<createLink>,
+    res: FastifyReply
+  ): Promise<void> {
     const { url, slug } = req.body;
 
     const customSlug = slug || nanoid(6);
@@ -34,16 +43,19 @@ class LinkController {
     }
   }
 
-  public async list(_: Request, res: Response): Promise<void> {
+  public async list(_: FastifyRequest, res: FastifyReply): Promise<void> {
     try {
-      const Links = await Link.find({}, {}, { sort: { url: 1 } });
-      res.status(200).send(Links);
+      const links = await Link.find({}, {}, { sort: { url: 1 } });
+      res.status(200).send(links);
     } catch (e: any) {
       res.status(500).send({ message: e.message });
     }
   }
 
-  public async getBySlug(req: Request, res: Response): Promise<void> {
+  public async getBySlug(
+    req: FastifyRequest<getSlug>,
+    res: FastifyReply
+  ): Promise<void> {
     const { slug } = req.params;
     try {
       const response = await Link.findOne({ slug });
@@ -57,7 +69,10 @@ class LinkController {
     }
   }
 
-  public async delete(req: Request, res: Response): Promise<void> {
+  public async delete(
+    req: FastifyRequest<deleteLink>,
+    res: FastifyReply
+  ): Promise<void> {
     const { id } = req.params;
     try {
       const response = await Link.findByIdAndDelete(id);
@@ -71,7 +86,10 @@ class LinkController {
     }
   }
 
-  public async update(req: Request, res: Response): Promise<void> {
+  public async update(
+    req: FastifyRequest<updateLink>,
+    res: FastifyReply
+  ): Promise<void> {
     const { id, url, slug } = req.body;
 
     const updateData: Record<string, any> = {};

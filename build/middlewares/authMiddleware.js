@@ -1,16 +1,18 @@
 import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'secretKey';
-const authMiddleware = (req, res, next) => {
-    const token = req.header('Authorization');
+const authMiddleware = async (req, reply) => {
+    const token = req.headers.authorization?.replace('Bearer ', ''); // Extrai o token removendo "Bearer "
     if (!token) {
-        return res.status(401).json({ message: 'Token não fornecido' });
+        return reply.status(401).send({ message: 'Token não fornecido' });
     }
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(403).json({ message: 'Token inválido' });
-        }
-        req.body.userId = decoded.userId;
-        next();
-    });
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        // Armazenar o userId no contexto da requisição
+        req.userId = decoded.userId;
+        // Continuar com a requisição
+    }
+    catch (err) {
+        return reply.status(403).send({ message: 'Token inválido' });
+    }
 };
 export default authMiddleware;

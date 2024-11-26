@@ -28,8 +28,8 @@ class LinkController {
     }
     async list(_, res) {
         try {
-            const Links = await Link.find({}, {}, { sort: { url: 1 } });
-            res.status(200).send(Links);
+            const links = await Link.find({}, {}, { sort: { url: 1 } });
+            res.status(200).send(links);
         }
         catch (e) {
             res.status(500).send({ message: e.message });
