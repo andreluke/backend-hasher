@@ -3,10 +3,20 @@ import Usuario from "../models/Usuario.js";
 import { generateRefreshToken, generateToken } from "./AuthController.js";
 import criptografia from "../utils/criptografia.js";
 import { nanoid } from "nanoid";
-import { createUser, getUser, updateUser, deleteUser } from "../interfaces/IUserController.js";
+import {
+  createUser,
+  getUser,
+  updateUser,
+  deleteUser,
+} from "../interfaces/IUserController.js";
+import { z } from "zod";
 
 class UsuarioController {
-  public async create(req: FastifyRequest<createUser>, res: FastifyReply): Promise<void> {
+  
+  public async create(
+    req: FastifyRequest<createUser>,
+    res: FastifyReply
+  ): Promise<void> {
     const { nome, email, senha } = req.body;
 
     if (!email && !senha) {
@@ -15,9 +25,13 @@ class UsuarioController {
 
     if (senha) {
       if (senha.length < 6) {
-        return res.status(400).send({ message: "A senha precisa ter no mínimo 6 caracteres" });
+        return res
+          .status(400)
+          .send({ message: "A senha precisa ter no mínimo 6 caracteres" });
       } else if (senha.length > 20) {
-        return res.status(400).send({ message: "A senha precisa ter no máximo 20 caracteres" });
+        return res
+          .status(400)
+          .send({ message: "A senha precisa ter no máximo 20 caracteres" });
       }
     }
 
@@ -44,10 +58,12 @@ class UsuarioController {
         senha: senhaCriptografada,
         email,
         created_at: criadoEm,
-        links: [{
-          url: "http://example.com",
-          slug: nanoid(6)
-        }]
+        links: [
+          {
+            url: "http://example.com",
+            slug: nanoid(6),
+          },
+        ],
       });
 
       const token = generateToken(response._id, response.email);
@@ -92,7 +108,10 @@ class UsuarioController {
     }
   }
 
-  public async getUsuario(req: FastifyRequest<getUser>, res: FastifyReply): Promise<void> {
+  public async getUsuario(
+    req: FastifyRequest<getUser>,
+    res: FastifyReply
+  ): Promise<void> {
     try {
       const { userId } = req.body;
       const usuario = await Usuario.findById(userId);
@@ -103,11 +122,16 @@ class UsuarioController {
       const { _id, ...rest } = usuario.toObject();
       return res.status(200).send({ _id, ...rest });
     } catch (error) {
-      return res.status(500).send({ erro: "Erro ao buscar informações do usuário" });
+      return res
+        .status(500)
+        .send({ erro: "Erro ao buscar informações do usuário" });
     }
   }
 
-  public async update(req: FastifyRequest<updateUser>, res: FastifyReply): Promise<void> {
+  public async update(
+    req: FastifyRequest<updateUser>,
+    res: FastifyReply
+  ): Promise<void> {
     const { userId, nome, email, senha } = req.body;
 
     try {
@@ -124,17 +148,24 @@ class UsuarioController {
       }
 
       await usuario.save();
-      return res.status(200).send({ message: "Usuário atualizado com sucesso", usuario });
+      return res
+        .status(200)
+        .send({ message: "Usuário atualizado com sucesso", usuario });
     } catch (error: any) {
       console.log(error);
       if (error.code === 11000 || error.code === 11001) {
         return res.status(500).send({ message: "Este e-mail já está em uso" });
       }
-      return res.status(500).send({ message: "Erro ao atualizar usuário", error });
+      return res
+        .status(500)
+        .send({ message: "Erro ao atualizar usuário", error });
     }
   }
 
-  public async delete(req: FastifyRequest<deleteUser>, res: FastifyReply): Promise<void> {
+  public async delete(
+    req: FastifyRequest<deleteUser>,
+    res: FastifyReply
+  ): Promise<void> {
     try {
       const { userId } = req.body;
 
@@ -149,7 +180,9 @@ class UsuarioController {
 
       return res.status(200).send({ message: "Usuário removido com sucesso" });
     } catch (error) {
-      return res.status(500).send({ message: "Erro ao remover usuário", error });
+      return res
+        .status(500)
+        .send({ message: "Erro ao remover usuário", error });
     }
   }
 }

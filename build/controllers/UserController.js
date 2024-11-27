@@ -10,10 +10,14 @@ class UsuarioController {
         }
         if (senha) {
             if (senha.length < 6) {
-                return res.status(400).send({ message: "A senha precisa ter no mínimo 6 caracteres" });
+                return res
+                    .status(400)
+                    .send({ message: "A senha precisa ter no mínimo 6 caracteres" });
             }
             else if (senha.length > 20) {
-                return res.status(400).send({ message: "A senha precisa ter no máximo 20 caracteres" });
+                return res
+                    .status(400)
+                    .send({ message: "A senha precisa ter no máximo 20 caracteres" });
             }
         }
         try {
@@ -36,10 +40,12 @@ class UsuarioController {
                 senha: senhaCriptografada,
                 email,
                 created_at: criadoEm,
-                links: [{
+                links: [
+                    {
                         url: "http://example.com",
-                        slug: nanoid(6)
-                    }]
+                        slug: nanoid(6),
+                    },
+                ],
             });
             const token = generateToken(response._id, response.email);
             const refreshToken = generateRefreshToken(response._id, response.email);
@@ -92,7 +98,9 @@ class UsuarioController {
             return res.status(200).send({ _id, ...rest });
         }
         catch (error) {
-            return res.status(500).send({ erro: "Erro ao buscar informações do usuário" });
+            return res
+                .status(500)
+                .send({ erro: "Erro ao buscar informações do usuário" });
         }
     }
     async update(req, res) {
@@ -108,14 +116,18 @@ class UsuarioController {
                 usuario.senha = await criptografia.criptografarSenha(senha);
             }
             await usuario.save();
-            return res.status(200).send({ message: "Usuário atualizado com sucesso", usuario });
+            return res
+                .status(200)
+                .send({ message: "Usuário atualizado com sucesso", usuario });
         }
         catch (error) {
             console.log(error);
             if (error.code === 11000 || error.code === 11001) {
                 return res.status(500).send({ message: "Este e-mail já está em uso" });
             }
-            return res.status(500).send({ message: "Erro ao atualizar usuário", error });
+            return res
+                .status(500)
+                .send({ message: "Erro ao atualizar usuário", error });
         }
     }
     async delete(req, res) {
@@ -130,7 +142,9 @@ class UsuarioController {
             return res.status(200).send({ message: "Usuário removido com sucesso" });
         }
         catch (error) {
-            return res.status(500).send({ message: "Erro ao remover usuário", error });
+            return res
+                .status(500)
+                .send({ message: "Erro ao remover usuário", error });
         }
     }
 }
